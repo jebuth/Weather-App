@@ -6,6 +6,8 @@
  */
 
 const UI = (function(){
+    let menu = document.querySelector("#menu-container");
+
     const showApp = () => {
         
         // add 'display-none' class to #app - loader
@@ -19,10 +21,19 @@ const UI = (function(){
         document.querySelector("#app-loader").classList.remove('display-none');
         document.querySelector("main").setAttribute('hidden', true);
     }
+
+    const _showMenu = () => menu.style.right = 0;
+
+    const _hideMenu = () => menu.style.right = '-65%';
+
+    document.querySelector("#open-menu-btn").addEventListener('click', _showMenu);
+    document.querySelector("#close-menu-btn").addEventListener('click', _hideMenu);
+
     return{
         showApp,
         loadApp
     }
+
 })();
 
 
