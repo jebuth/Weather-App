@@ -31,15 +31,15 @@
 
         <!--  currently weather section -->
         <section id="current-day-weather-container">
-            <h1 class="location-label">Brasov</h1>
+            <h1 class="location-label"></h1>
 
             <div class="flex-container" id="temperature-summary-container">
                 <div>
-                    <img src="./assets/images/summary-icons/clear-day-white.png" alt="">
+                    <img src="./assets/images/summary-icons/clear-day-white.png" alt="Summary Icon" id="currentlyIcon">
                 </div>
                 <div>
-                    <h1 id="degrees-label">20&#176;</h1>
-                    <p id="summary-label">Clear Day</p>
+                    <h1 id="degrees-label"></h1>
+                    <p id="summary-label"></p>
                 </div>
 
             </div>
@@ -47,11 +47,11 @@
             <div class="flex-container" id="humidity-wind-container">
                 <div>
                     <img class="icon-sm-30" src="./assets/images/icons/humidity.png" alt="">
-                    <span>20%</span>
+                    <span id="humidity-label"></span>
                 </div>
                 <div>
                     <img class="icon-sm-30" src="./assets/images/icons/wind-speed-flag.png" alt="">
-                    <span>3 m /h</span>
+                    <span id="wind-speed-label"></span>
                 </div>
             </div>
 
@@ -106,7 +106,7 @@
                     <input type="text" placeholder="Location" id="location-input">
                     <br>
                     <button class="ripple disabled" id="add-city-btn" disabled> Add City</button>
-                    <h1 class="location-label">Brashov</h1>
+                    <h1 class="location-label"></h1>
                 </div>
 
   

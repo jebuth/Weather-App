@@ -56,6 +56,37 @@ const UI = (function(){
 
     };
 
+    const drawWeatherData = (data, location) =>{
+        console.log(data)
+        console.log(location)
+
+        let currentlyData = data.currently;
+
+        // set city name in UI
+        document.querySelectorAll(".location-label").forEach((e) => {
+            e.innerHTML = location;
+        });
+
+        // set background img
+        document.querySelector('main').style.backgroundImage= `url("./assets/images/bg-images/${currentlyData.icon}.jpg")`;
+
+        // set icon
+        document.querySelector("#currentlyIcon").setAttribute('src', `./assets/images/summary-icons/${currentlyData.icon}-white.png`);
+
+        //set summary
+        document.querySelector("#summary-label").innerHTML = currentlyData.summary;
+
+        // set temperature from Fahreneit -> Celcius
+        document.querySelector("#degrees-label").innerHTML = Math.round((currentlyData.temperature - 32) * 5 / 9) + '&#176;'
+
+        // set humidity
+        document.querySelector("#humidity-label").innerHTML = Math.round(currentlyData.humidity * 100) + '%';
+
+        // set wind speed
+        document.querySelector("#wind-speed-label").innerHTML = (currentlyData.windSpeed * 1.6093).toFixed(1) + 'kph';
+
+        UI.showApp();
+    };
 
     // menu events
     document.querySelector("#open-menu-btn").addEventListener('click', _showMenu);
@@ -67,7 +98,8 @@ const UI = (function(){
 
     return{
         showApp,
-        loadApp
+        loadApp,
+        drawWeatherData
     }
 
 })();
@@ -117,24 +149,30 @@ const GETLOCATION = (function(){
  */
 const WEATHER = (function(){
 
+    // private keys for api
     const darkSkyKey = '9f6ff95bc5e8490a724e4e8a95156cad',
         geoCoderKey = '6d761e3da3f5434384888c86978cdd12';
 
+    // return valid URL for OpenCage api
     const _getGeoCodeURL = (location) =>
     `https://api.opencagedata.com/geocode/v1/json?q=${location}&key=${geoCoderKey}`;
 
+    // return valid URL for DarkSky api
     const _getDarkSkyURL = (lat, lng) =>
     `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${darkSkyKey}/${lat},${lng}`;
 
-    const _getDarkSkyData = (url) => {
+    // get weather data from Dark Sky
+    const _getDarkSkyData = (url, location) => {
         axios.get(url)
         .then((res) => {
             console.log(res);
+            UI.drawWeatherData(res.data, location);
         })
         .catch ((err) =>{
-            console.log(err);
+            console.error(err);
         })
     }
+
 
     const getWeather = (location) => {
         UI.loadApp();
@@ -147,10 +185,10 @@ const WEATHER = (function(){
                     lng = res.data.results[0].geometry.lng;
 
                 let darkSkyURL = _getDarkSkyURL(lat, lng);
-                _getDarkSkyData(darkSkyURL);
+                _getDarkSkyData(darkSkyURL, location);
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
             })
     };
 
