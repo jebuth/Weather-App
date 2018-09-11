@@ -68,7 +68,11 @@ const UI = (function(){
             dailyWeatherModel,
             day,
             minMaxTemp,
-            dailyIcon;
+            dailyIcon,
+            hourlyWeatherWrapper = document.querySelector("#hourly-weather-wrapper"),
+            hourlyWeatherModel,
+            hourlyIcon;
+            
 
 
         // set city name in UI
@@ -121,8 +125,32 @@ const UI = (function(){
             //append the model
             dailyWeatherWrapper.appendChild(dailyWeatherModel);
         }
-
         dailyWeatherWrapper.children[1].classList.add('current-day-of-the-week');
+
+        // set hourly weather
+
+        while(hourlyWeatherWrapper.children[1]){
+            hourlyWeatherWrapper.removeChild(hourlyWeatherWrapper.chilren[1]);
+        }
+
+        for(let i = 0; i <= 24; i++){
+            // clone the node and remove display none class
+            hourlyWeatherModel = hourlyWeatherWrapper.children[0].cloneNode(true);
+            hourlyWeatherModel.classList.remove('display-none');
+
+            // set hour
+            hourlyWeatherModel.children[0].children[0].innerHTML = new Date(hourlyData[i].time * 1000).getHours() + ":00";
+
+            //set temperature
+            hourlyWeatherModel.children[1].children[0].innerHTML = Math.round((hourlyData[i].temperature - 32) * 5 / 9) + '&#176;';
+
+            // set icon
+            hourlyIcon = hourlyData[i].icon;
+            hourlyWeatherModel.children[1].children[1].children[0].setAttribute('src', `./assets/images/summary-icons/${hourlyIcon}-grey.png`);
+
+            //append model
+            hourlyWeatherWrapper.appendChild(hourlyWeatherModel);
+        }
 
         UI.showApp();
     };
