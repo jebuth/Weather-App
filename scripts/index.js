@@ -89,7 +89,7 @@ const GETLOCATION = (function(){
         addCityBtn.setAttribute('disabled', 'true');
         addCityBtn.classList.add('disabled');
 
-        console.log("Get weather data for", location)
+        WEATHER.getWeather(location);
     }
 
     locationInput.addEventListener('input', function(){
@@ -108,7 +108,58 @@ const GETLOCATION = (function(){
 
     addCityBtn.addEventListener('click', _addCity);
 
-    })();
+})();
+
+/**
+ * 
+ * Get weather data from dark sky api
+ * 
+ */
+const WEATHER = (function(){
+
+    const darkSkyKey = '9f6ff95bc5e8490a724e4e8a95156cad',
+        geoCoderKey = '6d761e3da3f5434384888c86978cdd12';
+
+    const _getGeoCodeURL = (location) =>
+    `https://api.opencagedata.com/geocode/v1/json?q=${location}&key=${geoCoderKey}`;
+
+    const _getDarkSkyURL = (lat, lng) =>
+    `https://cors-anywhere.herokuapp.com/https://api.darksky.net/forecast/${darkSkyKey}/${lat},${lng}`;
+
+    const _getDarkSkyData = (url) => {
+        axios.get(url)
+        .then((res) => {
+            console.log(res);
+        })
+        .catch ((err) =>{
+            console.log(err);
+        })
+    }
+
+    const getWeather = (location) => {
+        UI.loadApp();
+
+        let geoCodeURL = _getGeoCodeURL(location);
+        
+        axios.get(geoCodeURL)
+            .then((res) =>{
+                let lat = res.data.results[0].geometry.lat,
+                    lng = res.data.results[0].geometry.lng;
+
+                let darkSkyURL = _getDarkSkyURL(lat, lng);
+                _getDarkSkyData(darkSkyURL);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    };
+
+    return{
+        getWeather
+    }
+
+})();
+
 
 
 /**
