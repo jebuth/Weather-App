@@ -21,8 +21,8 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:400,900" rel="stylesheet">
 </head>
 <body>
-    <div class="lds-dual-ring center display-none"></div>
-    <main>
+    <div id="app-loader" class="lds-dual-ring center"></div>
+    <main hidden>
         <button id="open-menu-btn" class="ripple">
             <img class="icon-sm-28"
             src="./assets/images/icons/menu.png"
@@ -108,12 +108,12 @@
                     <button class="ripple" id="add-city-btn" disabled> Add City</button>
                     <h1 class="location-label">Brashov</h1>
                 </div>
-            </div>
-        
+
+  
+            
 
 
             <!-- saved cities -->
-
             <div id="saved-cities-wrapper">
                 <div class="flex-container saved-city-box">
                     <div class="ripple">
@@ -124,13 +124,25 @@
                     </div>
                 </div>
             </div>
-
+        </div>
         </section>
 
 
 
     </main>
     <script src="./scripts/index.js"></script>
+    
+    <script> 
+        var btn = document.querySelector("#open-menu-btn");
+        btn.addEventListener('click', function(){
+            document.querySelector("#menu-container").style.right = "0px";
+        })
+
+
+        
+    </script>
+
+
 </body>
 </html> 
 
