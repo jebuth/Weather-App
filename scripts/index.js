@@ -42,7 +42,7 @@ const UI = (function(){
             hourlyWeather.setAttribute('visible', 'true');
             hourlyWeather.style.bottom = 0; // why this line and previous line?
             arrow.style.transform = "rotate(180deg)";
-            dailyWeather.style.opacity = 0 // hide daily weather panel
+            dailyWeather.style.opacity = 0; // hide daily weather panel
             
         }
         else if(visible == 'true'){
@@ -57,8 +57,8 @@ const UI = (function(){
     };
 
     const drawWeatherData = (data, location) =>{
-        console.log(data)
-        console.log(location)
+
+        console.log('1');
 
         let currentlyData = data.currently,
             dailyData = data.daily.data,
@@ -98,10 +98,11 @@ const UI = (function(){
         // set wind speed
         document.querySelector("#wind-speed-label").innerHTML = (currentlyData.windSpeed * 1.6093).toFixed(1) + 'kph';
 
+        console.log('2');
 
         // set daily weather 
         while(dailyWeatherWrapper.children[1]){
-            dailyWeatherWrapper.remove(dailyWeatherWrapper.children[1]);
+            dailyWeatherWrapper.removeChild(dailyWeatherWrapper.children[1]);
         }
 
         for(let i = 0; i <= 6; i++){
@@ -127,13 +128,17 @@ const UI = (function(){
         }
         dailyWeatherWrapper.children[1].classList.add('current-day-of-the-week');
 
+        console.log('3');
         // set hourly weather
 
         while(hourlyWeatherWrapper.children[1]){
-            hourlyWeatherWrapper.removeChild(hourlyWeatherWrapper.chilren[1]);
+            hourlyWeatherWrapper.removeChild(hourlyWeatherWrapper.children[1]);
         }
 
+        console.log('4');
+
         for(let i = 0; i <= 24; i++){
+            console.log('5');
             // clone the node and remove display none class
             hourlyWeatherModel = hourlyWeatherWrapper.children[0].cloneNode(true);
             hourlyWeatherModel.classList.remove('display-none');
@@ -188,7 +193,7 @@ const GETLOCATION = (function(){
         addCityBtn.setAttribute('disabled', 'true');
         addCityBtn.classList.add('disabled');
 
-        WEATHER.getWeather(location);
+        WEATHER.getWeather(location, true);
     }
 
     locationInput.addEventListener('input', function(){
@@ -241,13 +246,24 @@ const WEATHER = (function(){
     }
 
 
-    const getWeather = (location) => {
+    const getWeather = (location, save) => {
         UI.loadApp();
 
         let geoCodeURL = _getGeoCodeURL(location);
         
         axios.get(geoCodeURL)
             .then((res) =>{
+
+                if(res.data.results.length == 0){
+                    console.error("Invalid location");
+                    UI.showApp();
+                    return;
+                }
+
+                if(save){
+                    LOCALSTORAGE.save(location);
+                }
+
                 let lat = res.data.results[0].geometry.lat,
                     lng = res.data.results[0].geometry.lng;
 
@@ -266,6 +282,43 @@ const WEATHER = (function(){
 })();
 
 
+/**
+ * Local storage api
+ * 
+ */
+const LOCALSTORAGE = (function (){
+    
+    let savedCities = [];
+
+    const save = (city) => {
+        savedCities.push(city);
+        localStorage.setItem('savedCities', JSON.stringify(savedCities));
+    };
+
+    const get = () => {
+        if(localStorage.getItem('savedCities') != null){
+            savedCities = JSON.parse(localStorage.getItem('savedCities'));
+        }
+    };
+
+    const remove = (index) => {
+        if (index < savedCities.length){
+            savedCities.splice(index, 1);
+            localStorage.setItem('savedCities', JSON.stringify(savedCities));
+        }
+    };
+
+    const getSavedCities = () => savedCities;
+
+    return{
+        save,
+        get,
+        remove,
+        getSavedCities
+    };
+})();
+
+
 
 /**
  * 
@@ -274,6 +327,14 @@ const WEATHER = (function(){
  */
 
 window.onload = function(){
-    UI.showApp();
+    LOCALSTORAGE.get();
+    let cities = LOCALSTORAGE.getSavedCities();
+    if(cities.length != 0){
+        WEATHER.getWeather(cities[cities.length - 1], false);
+    }
+    else
+        UI.showApp();
+
+    
 }
 
