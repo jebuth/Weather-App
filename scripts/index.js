@@ -208,6 +208,16 @@ const SAVEDCITIES = (function(){
         container.appendChild(cityBox);
     }
 
+    const _deleteCity = (cityHTMLBtn) => {
+        //create array from array-like object in order to use array methods like indexOf() 
+        let nodes = Array.prototype.slice.call(container.children),
+            cityWrapper = cityHTMLBtn.closes('saved-city-box'),
+            cityIndex = nodes.indexOf(cityWrapper);
+        
+        LOCALSTORAGE.remove(cityIndex);
+        cityWrapper.remove();
+    }
+
 });
 
 
