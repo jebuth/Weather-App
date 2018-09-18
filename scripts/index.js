@@ -177,6 +177,42 @@ const UI = (function(){
 })();
 
 /**
+ * Saved cities module
+ * 
+ * display saved cities from local storage
+ * 
+ */
+
+const SAVEDCITIES = (function(){
+    let container = document.querySelector("#saved-cities-wrapper");
+
+    const drawcity = (city) => {
+        let cityBox = document.createElement('div'),
+            cityWrapper = document.createElement('div'),
+            deleteWrapper = document.createElement('div'),
+            cityTextNode = document.createElement('h1'),
+            deleteBtn = document.createElement('button');
+
+        cityBox.classList.add('flex-container', 'saved-city-box');
+        cityTextNode.innerHTML = city;
+        cityTextNode.classList.add('set-city');
+        cityWrapper.classList.add('ripple', 'set-city');
+        cityWrapper.appendChild(cityTextNode);
+        cityWrapper.appendChild(deleteBtn);
+
+        deleteBtn.classList.add('ripple', 'remove-saved-city');
+        deleteBtn.innerHTML = '-';
+        deleteWrapper.appendChild(deleteBtn);
+        cityBox.appendChild(deleteWrapper);
+
+        container.appendChild(cityBox);
+    }
+
+});
+
+
+
+/**
  * Get location module
  * 
  */
@@ -254,6 +290,7 @@ const WEATHER = (function(){
         axios.get(geoCodeURL)
             .then((res) =>{
 
+                // results property from axios will be empty if user entered invalid location
                 if(res.data.results.length == 0){
                     console.error("Invalid location");
                     UI.showApp();
@@ -334,7 +371,6 @@ window.onload = function(){
     }
     else
         UI.showApp();
-
-    
+   
 }
 
